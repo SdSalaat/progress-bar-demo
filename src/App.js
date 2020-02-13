@@ -9,8 +9,7 @@ class App extends React.Component {
     state = {
         buttons: [],
         bars: [],
-        selectOptions: [],
-        selectedOption: "0"
+        selectedOption: 1
     };
 
     // LifeCycle Hooks
@@ -34,15 +33,18 @@ class App extends React.Component {
 
     // Event Handling For Button
     handleButton = (value) => {
-        let newBars = this.state.bars;
-        let position = this.state.selectedOption;
+        let newBars = this.state.bars.slice();
+        let position = this.state.selectedOption-1;
         let val = (value + newBars[position]) < 0 ? 0 : value + newBars[position];
-
-        newBars.splice(position, 1, val);
 
         this.setState({
             ...this.state,
-            bars: newBars
+            bars: newBars.map((item, index)=>{
+                if (index === position) {
+                    return val;
+                }
+                return item;
+            })
         })
     };
 
@@ -58,7 +60,7 @@ class App extends React.Component {
 
     // Handling HTML for select Options
     renderSelectOptions = () => this.state.bars.map((bar, index) => (
-        <option key={index} value={index}>#progress-{index}</option>
+        <option key={index} value={index+1}>#progress-{index+1}</option>
     ));
 
     // Handling HTML for Buttons
@@ -69,9 +71,16 @@ class App extends React.Component {
 
     render() {
         return (
-            <div className='padding__main'>
-                <h1>Progress Bar Demo</h1>
-                {this.barsHTML()}
+            <div className='container'>
+                <div className="row">
+                    <div className="col">
+                        <h2>Progress Bar Demo</h2>
+                    </div>
+                </div>
+                <div>
+                    {this.barsHTML()}
+                </div>
+                <br/>
                 <select className='form-control-sm' onChange={this.handleSelect.bind(this)}>
                     {this.renderSelectOptions()}
                 </select>
